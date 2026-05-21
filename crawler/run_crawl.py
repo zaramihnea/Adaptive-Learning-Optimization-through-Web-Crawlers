@@ -20,6 +20,7 @@ def main():
     topic = args["topic"]
     learner_level = args["learner_level"]
     depth = args["depth"]
+    language = args.get("language", "en")
 
     init_db()
 
@@ -32,6 +33,7 @@ def main():
         topic=topic,
         learner_level=learner_level,
         depth=depth,
+        language=language,
     )
     process.start()
 

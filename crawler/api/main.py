@@ -41,6 +41,7 @@ class CrawlRequest(BaseModel):
     learner_goal: Optional[str] = None
     depth: int = 2
     max_items: int = 0
+    language: str = "en"
 
 
 class RecommendationItem(BaseModel):
@@ -94,6 +95,7 @@ def crawl(req: CrawlRequest):
             "topic": req.topic,
             "learner_level": req.learner_level,
             "depth": req.depth,
+            "language": req.language,
         })
         
         # Popen allows monitoring the process while it runs in the background

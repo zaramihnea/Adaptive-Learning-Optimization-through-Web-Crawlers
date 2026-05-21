@@ -1,11 +1,20 @@
 import hashlib
+from urllib.parse import urlparse, urlunparse
 from sqlalchemy.exc import IntegrityError
 from db.session import SessionLocal
 from db.models import Document, CrawlRunDocument
 
 
+def normalize_url(url: str) -> str:
+    p = urlparse(url)
+    # strip query string, fragment, and trailing slash from path
+    normalized = urlunparse((p.scheme, p.netloc, p.path.rstrip("/"), "", "", ""))
+    return normalized
+
+
 class DeduplicationPipeline:
     def process_item(self, item, spider):
+        item["url"] = normalize_url(item["url"])
         text = (item.get("body") or "").encode("utf-8")
         item["content_hash"] = hashlib.sha256(text).hexdigest()
         return item

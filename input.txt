@@ -1,0 +1,18 @@
+Seed: https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous
+Topic: javascript async
+Level: intermediate
+Goal: master async await and promises
+Lang: English
+Max pages: 30
+
+---
+
+Seed: https://www.python-kurs.eu/python_kurs.php
+Topic: python
+Level: beginner
+Goal: python grundlagen lernen
+Lang: German
+Max pages: 20
+
+---
+

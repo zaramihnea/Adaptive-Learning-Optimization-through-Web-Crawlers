@@ -17,17 +17,10 @@ services:
       timeout: 5s
       retries: 10
 
-  crawler:
-    build: .
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file: .env
-    environment:
-      DATABASE_URL: postgresql://crawler:password@db:5432/educrawl
-
   api:
-    build: .
+    build:
+      context: ..
+      dockerfile: crawler/Dockerfile
     command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       db:
@@ -37,6 +30,13 @@ services:
       DATABASE_URL: postgresql://crawler:password@db:5432/educrawl
     ports:
       - "8000:8000"
+
+  frontend:
+    build: ../frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
 
 volumes:
   pgdata:

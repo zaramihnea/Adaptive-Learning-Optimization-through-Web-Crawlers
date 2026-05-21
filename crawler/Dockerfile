@@ -6,9 +6,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev gcc \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+COPY crawler/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY crawler/ .
+COPY pipeline/ ./pipeline/
 
 CMD ["python", "main.py"]
