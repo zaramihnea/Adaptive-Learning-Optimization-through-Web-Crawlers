@@ -9,7 +9,8 @@
       "Bash(docker build *)",
       "Bash(docker rm *)",
       "Bash(docker run *)",
-      "Bash(docker restart *)"
+      "Bash(docker restart *)",
+      "Bash(git commit --amend -m 'Add frontend and wire up API service *)"
     ]
   }
 }
