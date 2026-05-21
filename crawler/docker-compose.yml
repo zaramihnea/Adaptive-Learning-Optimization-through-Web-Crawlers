@@ -11,14 +11,32 @@ services:
       - "5434:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crawler -d educrawl"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   crawler:
     build: .
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file: .env
     environment:
       DATABASE_URL: postgresql://crawler:password@db:5432/educrawl
+
+  api:
+    build: .
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://crawler:password@db:5432/educrawl
+    ports:
+      - "8000:8000"
 
 volumes:
   pgdata:

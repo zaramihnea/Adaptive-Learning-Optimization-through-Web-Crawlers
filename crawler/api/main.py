@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 os.environ.setdefault("SCRAPY_SETTINGS_MODULE", "crawler.settings")
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timezone
@@ -18,6 +19,13 @@ from db.models import CrawlRun, CrawlRunDocument, Document
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="EduCrawl API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["GET", "POST", "PATCH"],
+    allow_headers=["Content-Type"],
+)
 
 
 @app.on_event("startup")
@@ -81,7 +89,7 @@ def crawl(req: CrawlRequest):
 
     try:
         crawler_dir = os.path.join(os.path.dirname(__file__), "..")
-        python = os.path.join(crawler_dir, ".venv", "bin", "python3")
+        python = sys.executable
         run_crawler = os.path.join(crawler_dir, "run_crawl.py")
         args = json.dumps({
             "run_id": run_id,
