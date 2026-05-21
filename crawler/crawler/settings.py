@@ -27,6 +27,11 @@ ITEM_PIPELINES = {
     "crawler.pipelines.PostgresPipeline": 200,
 }
 
+# disable offsite blocking — we want cross-domain crawling
+DOWNLOADER_MIDDLEWARES = {
+    "scrapy.downloadermiddlewares.offsite.OffsiteMiddleware": None,
+}
+
 CLOSESPIDER_PAGECOUNT = int(os.getenv("MAX_PAGES", "500"))
 
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")

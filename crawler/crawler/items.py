@@ -10,5 +10,3 @@ class DocumentItem(scrapy.Item):
     word_count = scrapy.Field()
     content_hash = scrapy.Field()
     crawl_run_id = scrapy.Field()
-    crawl_topic = scrapy.Field()
-    learner_level = scrapy.Field()

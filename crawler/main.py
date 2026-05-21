@@ -3,7 +3,7 @@ import sys
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from db.session import init_db
-from db.models import CrawlRun
+from db.models import CrawlRun, CrawlRunDocument
 from db.session import SessionLocal
 from datetime import datetime, timezone
 
@@ -72,11 +72,17 @@ def main():
     )
     process.start()
 
+    # update stats from actual DB counts after crawl finishes
+    pages_crawled = session.query(CrawlRunDocument).filter_by(crawl_run_id=run_id).count()
+
     run = session.get(CrawlRun, run_id)
     run.finished_at = datetime.now(timezone.utc)
     run.status = "done"
+    run.pages_crawled = pages_crawled
     session.commit()
     session.close()
+
+    print(f"\nDone — {pages_crawled} documents collected.")
 
 
 if __name__ == "__main__":

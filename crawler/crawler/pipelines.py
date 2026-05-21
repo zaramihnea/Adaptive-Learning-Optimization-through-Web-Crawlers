@@ -1,7 +1,7 @@
 import hashlib
 from sqlalchemy.exc import IntegrityError
 from db.session import SessionLocal
-from db.models import Document
+from db.models import Document, CrawlRunDocument
 
 
 class DeduplicationPipeline:
@@ -19,32 +19,42 @@ class PostgresPipeline:
         self.session.close()
 
     def process_item(self, item, spider):
-        existing = (
-            self.session.query(Document)
-            .filter_by(content_hash=item["content_hash"])
-            .first()
-        )
-        if existing:
-            spider.logger.debug(f"Duplicate skipped: {item['url']}")
-            spider.crawler_stats["duplicate"] += 1
-            return item
+        run_id = item.get("crawl_run_id")
 
-        doc = Document(
-            url=item["url"],
-            domain=item["domain"],
-            title=item.get("title"),
-            body=item.get("body"),
-            language=item.get("language"),
-            word_count=item.get("word_count", 0),
-            content_hash=item["content_hash"],
-            crawl_topic=item.get("crawl_topic"),
-            learner_level=item.get("learner_level"),
-        )
+        # check if document already exists globally
+        doc = self.session.query(Document).filter_by(url=item["url"]).first()
+
+        if doc is None:
+            doc = Document(
+                url=item["url"],
+                domain=item["domain"],
+                title=item.get("title"),
+                body=item.get("body"),
+                language=item.get("language"),
+                word_count=item.get("word_count", 0),
+                content_hash=item["content_hash"],
+            )
+            try:
+                self.session.add(doc)
+                self.session.flush()  # get doc.id without committing
+            except IntegrityError:
+                self.session.rollback()
+                doc = self.session.query(Document).filter_by(url=item["url"]).first()
+                spider.crawler_stats["duplicate"] += 1
+
+        # link document to this crawl run (skip if already linked)
+        if run_id and doc:
+            already_linked = (
+                self.session.query(CrawlRunDocument)
+                .filter_by(crawl_run_id=run_id, document_id=doc.id)
+                .first()
+            )
+            if not already_linked:
+                self.session.add(CrawlRunDocument(crawl_run_id=run_id, document_id=doc.id))
+
         try:
-            self.session.add(doc)
             self.session.commit()
         except IntegrityError:
-            # url unique constraint — already crawled via different path
             self.session.rollback()
             spider.crawler_stats["duplicate"] += 1
 

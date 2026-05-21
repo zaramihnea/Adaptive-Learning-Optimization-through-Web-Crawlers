@@ -3,7 +3,6 @@ import scrapy
 import trafilatura
 from crawler.items import DocumentItem
 
-# Domains that are known paywalls or login walls — not worth crawling
 BLOCKED_DOMAINS = {
     "facebook.com", "twitter.com", "x.com", "instagram.com",
     "linkedin.com", "tiktok.com", "youtube.com", "reddit.com",
@@ -13,12 +12,7 @@ BLOCKED_DOMAINS = {
 class EduSpider(scrapy.Spider):
     name = "edu"
 
-    custom_settings = {
-        # disable offsite blocking so crawler can follow links across domains
-        "SPIDER_MIDDLEWARES": {
-            "scrapy.spidermiddlewares.offsite.OffsiteMiddleware": None,
-        },
-    }
+    custom_settings = {}
 
     def __init__(self, seed_urls=None, topic="", learner_level="beginner", depth=2, run_id=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -48,7 +42,6 @@ class EduSpider(scrapy.Spider):
         else:
             domain = urlparse(response.url).netloc
             title = response.css("title::text").get(default="").strip()
-            words = extracted.split()
 
             yield DocumentItem(
                 url=response.url,
@@ -56,17 +49,14 @@ class EduSpider(scrapy.Spider):
                 title=title,
                 body=extracted,
                 language=self._detect_language(extracted),
-                word_count=len(words),
+                word_count=len(extracted.split()),
                 crawl_run_id=self.run_id,
-                crawl_topic=self.topic,
-                learner_level=self.learner_level,
             )
             self.crawler_stats["crawled"] += 1
 
         for href, anchor_text in self._extract_links(response):
             url = response.urljoin(href)
             parsed = urlparse(url)
-
             if parsed.scheme not in ("http", "https"):
                 continue
             if any(blocked in parsed.netloc for blocked in BLOCKED_DOMAINS):
@@ -75,7 +65,6 @@ class EduSpider(scrapy.Spider):
                 yield scrapy.Request(url, callback=self.parse)
 
     def _is_topic_relevant(self, path: str, anchor_text: str) -> bool:
-        """Follow a link if its URL path or anchor text contains any topic keyword."""
         if not self.topic_keywords:
             return True
         combined = (path + " " + anchor_text).lower()
