@@ -109,7 +109,7 @@ class EduSpider(scrapy.Spider):
 
     def _is_target_language(self, detected: str) -> bool:
         if self.language == "en":
-            # langdetect is unreliable on technical content — be permissive for English
+            # langdetect is unreliable on technical content - be permissive for English
             return detected not in ("zh-cn", "zh-tw", "ru", "ja", "ko", "ar", "th", "fa")
         # for non-English targets, require an exact match
         return detected == self.language
