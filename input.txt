@@ -16,3 +16,84 @@ Max pages: 20
 
 ---
 
+Seed: https://realpython.com
+Topic: python
+Level: beginner
+Goal: learn python functions and data structures
+Lang: English
+Max pages: 30
+
+---
+
+Seed: https://javascript.info
+Topic: javascript
+Level: beginner
+Goal: understand javascript fundamentals
+Lang: English
+Max pages: 30
+
+---
+
+Seed: https://machinelearningmastery.com/start-here/
+Topic: neural network
+Level: intermediate
+Goal: understand neural networks and deep learning
+Lang: English
+Max pages: 30
+
+---
+
+Seed: https://scikit-learn.org/stable/getting_started.html, https://machinelearningmastery.com
+Topic: machine learning
+Level: intermediate
+Goal: understand classification algorithms
+Lang: English
+Max pages: 40
+
+---
+
+Seed: https://developer.mozilla.org/en-US/docs/Learn/JavaScript
+Topic: javascript
+Level: beginner
+Goal: learn dom manipulation and events
+Lang: English
+Max pages: 30
+
+---
+
+Seed: https://ro.wikipedia.org/wiki/Python_(limbaj_de_programare)
+Topic: python
+Level: beginner
+Goal: invata python de la zero
+Lang: Romanian
+Max pages: 20
+
+---
+
+Seed: https://www.heise.de/thema/Machine-Learning
+Topic: machine learning
+Level: beginner
+Goal: maschinelles lernen verstehen
+Lang: German
+Max pages: 20
+
+---
+
+Seed: https://docs.python.org/3/tutorial/
+Topic: python
+Level: advanced
+Goal: understand python internals and performance
+Lang: English
+Max pages: 30
+
+---
+
+Seed: https://css-tricks.com, https://developer.mozilla.org/en-US/docs/Web/CSS
+Topic: css
+Level: beginner
+Goal: learn css flexbox and grid layout
+Lang: English
+Max pages: 30
+
+---
+

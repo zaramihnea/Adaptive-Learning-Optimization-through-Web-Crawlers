@@ -27,7 +27,7 @@ ITEM_PIPELINES = {
     "crawler.pipelines.PostgresPipeline": 200,
 }
 
-# disable offsite blocking — we want cross-domain crawling
+# disable offsite blocking - we want cross-domain crawling
 DOWNLOADER_MIDDLEWARES = {
     "scrapy.downloadermiddlewares.offsite.OffsiteMiddleware": None,
 }
